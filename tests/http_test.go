@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -67,5 +68,25 @@ func TestFaqIndexRequest(t *testing.T) {
 	}
 	if !strings.Contains(dataString, "Welcome to FAQ!") {
 		t.Error("Expected body to contains 'Welcome to FAQ!'")
+	}
+}
+func TestStaticRequest(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/static/js/main.js", nil)
+	w := httptest.NewRecorder()
+	controllers.StaticHandler(controllers.IndexStatic()).ServeHTTP(w, req)
+	resp := w.Result()
+
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Error(err)
+	}
+	dataString := string(data)
+	fmt.Println(dataString)
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected status %d; got %d", http.StatusOK, resp.StatusCode)
+	}
+	if len(dataString) == 0 {
+		t.Error("Expected body to contains 'main.js' content")
 	}
 }
