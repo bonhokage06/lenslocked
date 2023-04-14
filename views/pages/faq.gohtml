@@ -1,0 +1,15 @@
+{{template "header" .}}
+    <h1 class="text-4xl semibold tracking-tight">Welcome to FAQ!</h1>
+    <div class="grid grid-cols-2 gap-16 mt-4 p-4">
+    {{range .Questions}}
+        {{template "qa".}}
+    {{end}}
+    </div>
+{{template "footer" .}}
+
+{{define "qa"}}
+    <div>
+        <p class="text-lg text-gray-800 semibold"> Q: {{.Question}}</p>
+        <p class="text-sm text-gray-500 italic"> A: {{.Answer}}</p>        
+    </div>
+{{end}}

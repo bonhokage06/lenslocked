@@ -1,0 +1,54 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="mobile-nav" class="fixed h-full w-full bg-blue-800 z-50 invisible text-white flex flex-col">
+        <div class="text-5xl flex flex-row-reverse  pr-6 py-4">
+        <button id="mobile-nav-close">X</button>
+        </div>
+        <div class="flex flex-col flex-grow items-center justify-center">
+            <a class="text-6xl font-semibold py-6 hover:text-blue-100 transition ease-in-out duration-1000" href="/">Home</a>
+            <a class="text-6xl font-semibold py-6 hover:text-blue-100 transition ease-in-out duration-1000" href="/contact">Contact</a>
+            <a class="text-6xl font-semibold py-6 hover:text-blue-100 transition ease-in-out duration-1000" href="/faq">FAQ</a>        
+        </div>
+    </div>
+    <header class="bg-gradient-to-r from-blue-800 to-indigo-800">
+        <nav class="px-8 py-6 flex items-center text-white">
+            <div class="pr-12 text-4xl bold font-seriff">Lenslocked</div>
+            <div class="flex-grow invisible md:visible">
+                <a class="text-lg font-semibold pr-8 hover:text-blue-100" href="/">Home</a>
+                <a class="text-lg font-semibold pr-8 hover:text-blue-100" href="/contact">Contact</a>
+                <a class="text-lg font-semibold pr-8 hover:text-blue-100" href="/faq">FAQ</a>
+            </div>
+            <div class="invisible md:visible">
+                <a class="pr-4" href="#">Sign in</a>
+                <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="#">Sign up</a>
+            </div>
+            <button id="mobile-hamburger" class="p-4 space-y-2 bg-gray-600 rounded shadow md:invisible">
+                <span class="block w-8 h-0.5 bg-gray-100"></span>
+                <span class="block w-8 h-0.5 bg-gray-100"></span>
+                <span class="block w-8 h-0.5 bg-gray-100"></span>
+            </button>            
+        </nav>
+    </header>
+    <main class="p-4">
+{{end}}
+{{define "footer"}}
+    </main>
+    <footer class="p-4 text-center font-bold">
+        <p>© 2017 Company, Inc.</p>
+    </footer>
+    <script type="module" src="/static/js/main.js"></script>
+</body>
+
+</html>
+{{end}}
