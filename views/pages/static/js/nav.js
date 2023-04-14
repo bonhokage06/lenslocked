@@ -13,6 +13,9 @@ class Nav {
   toggle() {
     this.mobileNav.classList.toggle("invisible")
     this.mobileNav.classList.toggle("visible")
+    if (this.mobileNav.classList.contains("visible")) {
+      this.mobileNav.classList.toggle("animate-fade")
+    }
   }
 }
 
