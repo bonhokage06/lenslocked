@@ -16,7 +16,7 @@ func TestHomeIndexRequest(t *testing.T) {
 	helpers.CurrentWorkingDirectory()
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/", nil)
 	w := httptest.NewRecorder()
-	controllers.Handler(controllers.Index(nil, "home.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	controllers.HtmlHandler(controllers.Index(nil, "home.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
@@ -35,7 +35,7 @@ func TestHomeIndexRequest(t *testing.T) {
 func TestContactIndexRequest(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/contact", nil)
 	w := httptest.NewRecorder()
-	controllers.Handler(controllers.Index(nil, "contact.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	controllers.HtmlHandler(controllers.Index(nil, "contact.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
@@ -54,7 +54,7 @@ func TestContactIndexRequest(t *testing.T) {
 func TestFaqIndexRequest(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/faq", nil)
 	w := httptest.NewRecorder()
-	controllers.Handler(controllers.Index(nil, "faq.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	controllers.HtmlHandler(controllers.Index(nil, "faq.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()

@@ -6,7 +6,7 @@ import (
 )
 
 type Controller interface {
-	Home(w http.ResponseWriter, r *http.Request)
+	Create(r *http.Request) interface{}
 }
 
 type Home struct {

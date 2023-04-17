@@ -18,6 +18,11 @@ func Index(dataFunc func(r *http.Request) interface{}, path ...string) Page {
 		dataFnc:  dataFunc,
 	}
 }
+func IndexJson(dataFunc func(r *http.Request) interface{}) Json {
+	return Json{
+		dataFnc: dataFunc,
+	}
+}
 func IndexStatic() Static {
 	fs := http.FileServer(http.FS(pages.StaticFs))
 	return Static{

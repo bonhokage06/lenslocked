@@ -2,14 +2,16 @@
 <div class="py-5 flex justify-center">
     <div class="px-8 py-6 w-1/2 bg-white rounded shadow">
         <h1 class="py-2 text-4xl font-bold text-center">Sign Up</h1>    
-        <form method="POST" action="/users">
+        <form method="POST" action="/signup">
             <div class="py-2">
-                <label class="text-sm font-semibold text-gray-800" for="email" required>Email</label>
-                <input class="w-full px-3 py-2 border border-gray-200 placeholder-gray-500 text-gray-800 rounded" type="email" id="email" name="email" placeHolder="Email Address" autocomplete="email" />
+                <label class="text-sm font-semibold text-gray-800" for="email">Email</label>
+                <input class="w-full px-3 py-2 border border-gray-200 placeholder-gray-500 text-gray-800 rounded" 
+                    type="email" id="email" name="email" placeHolder="Email Address" autocomplete="email" 
+                    value="{{.Email}}"required {{if not .Email}} autofocus {{end}} />
             </div>
             <div class="py-2">
                 <label class="text-sm font-semibold text-gray-800" for="password">Password</label>
-                <input class="w-full px-3 py-2 border border-gray-200 placeholder-gray-500 text-gray-800 rounded" type="password" id="password" name="password" placeHolder="Password" autocomplete="password" required />
+                <input class="w-full px-3 py-2 border border-gray-200 placeholder-gray-500 text-gray-800 rounded" type="password" id="password" name="password" placeHolder="Password" autocomplete="password" required {{if .Email}} autofocus {{end}} />
             </div>
             <div class="py-4">
                 <button class="w-full py-4 px-2 bg-indigo-600 hover:bg-indigo-700 text-lg text-white ease-in duration-500" type="submit">Sign Up</button>

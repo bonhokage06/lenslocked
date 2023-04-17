@@ -1,8 +1,8 @@
 package models
 
 type User struct {
-	Name  string
-	Users map[string]string
+	Email    string
+	Password string
 }
 
 func (u User) GetUser() User {
