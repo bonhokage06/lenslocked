@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/bonhokage06/lenslocked/controllers"
+	"github.com/bonhokage06/lenslocked/helpers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
@@ -15,9 +16,9 @@ func (router *Router) New() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.CleanPath)
-	HtmlHandler := controllers.HtmlHandler
-	JsonHandler := controllers.JsonHandler
-	StaticHandler := controllers.StaticHandler
+	HtmlHandler := helpers.HtmlHandler
+	JsonHandler := helpers.JsonHandler
+	StaticHandler := helpers.StaticHandler
 	ContactHandler := controllers.Contact{}
 	FaqHandler := controllers.Faq{}
 	UsersHandler := controllers.Users{}
