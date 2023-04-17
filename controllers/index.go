@@ -8,7 +8,7 @@ import (
 	"github.com/bonhokage06/lenslocked/views/pages"
 )
 
-func Index(dataFunc func(r *http.Request) interface{}, path ...string) helpers.Page {
+func Html(dataFunc func(r *http.Request) interface{}, path ...string) helpers.Page {
 	template := templates.Html{}
 	tpl, err := template.ParseFs(pages.FS, path...)
 	if err != nil {
@@ -19,12 +19,12 @@ func Index(dataFunc func(r *http.Request) interface{}, path ...string) helpers.P
 		DataFunc: dataFunc,
 	}
 }
-func IndexJson(dataFunc func(r *http.Request) interface{}) helpers.Json {
+func Json(dataFunc func(r *http.Request) interface{}) helpers.Json {
 	return helpers.Json{
 		DataFunc: dataFunc,
 	}
 }
-func IndexStatic() helpers.Static {
+func Static() helpers.Static {
 	fs := http.FileServer(http.FS(pages.StaticFs))
 	return helpers.Static{
 		Fs: fs,
