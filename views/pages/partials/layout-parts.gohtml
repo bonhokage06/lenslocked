@@ -10,8 +10,8 @@
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <div id="mobile-nav" class="fixed h-full w-full bg-blue-800 z-50 invisible text-white flex flex-col">
+<body class="min-h-screen">
+    <header id="mobile-nav" class="fixed h-full w-full bg-blue-800 z-50 invisible text-white flex flex-col">
         <div class="text-4xl flex flex-row-reverse p-6">
         <button id="mobile-nav-close">X</button>
         </div>
@@ -20,8 +20,8 @@
             <a class="text-6xl font-semibold py-6 hover:text-blue-100 transition ease-in-out duration-1000" href="/contact">Contact</a>
             <a class="text-6xl font-semibold py-6 hover:text-blue-100 transition ease-in-out duration-1000" href="/faq">FAQ</a>        
         </div>
-    </div>
-    <header class="bg-gradient-to-r from-blue-800 to-indigo-800">
+    </header>
+    <header class="bg-gradient-to-r from-blue-800 to-indigo-800 sticky top-0">
         <nav class="px-8 py-6 flex items-center text-white">
             <div class="pr-12 text-4xl bold font-seriff">Lenslocked</div>
             <div class="flex-grow invisible md:visible">
@@ -31,7 +31,7 @@
             </div>
             <div class="invisible md:visible">
                 <a class="pr-4" href="#">Sign in</a>
-                <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="#">Sign up</a>
+                <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="/signup">Sign up</a>
             </div>
             <button id="mobile-hamburger" class="p-4 space-y-2 bg-gray-600 rounded shadow md:invisible">
                 <span class="block w-8 h-0.5 bg-gray-100"></span>
