@@ -16,7 +16,7 @@ func TestHomeIndexRequest(t *testing.T) {
 	helpers.CurrentWorkingDirectory()
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/", nil)
 	w := httptest.NewRecorder()
-	controllers.HtmlHandler(controllers.Index(nil, "home.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	helpers.HtmlHandler(controllers.Index(nil, "home.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
@@ -35,7 +35,7 @@ func TestHomeIndexRequest(t *testing.T) {
 func TestContactIndexRequest(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/contact", nil)
 	w := httptest.NewRecorder()
-	controllers.HtmlHandler(controllers.Index(nil, "contact.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	helpers.HtmlHandler(controllers.Index(nil, "contact.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
@@ -54,7 +54,7 @@ func TestContactIndexRequest(t *testing.T) {
 func TestFaqIndexRequest(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/faq", nil)
 	w := httptest.NewRecorder()
-	controllers.HtmlHandler(controllers.Index(nil, "faq.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	helpers.HtmlHandler(controllers.Index(nil, "faq.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
@@ -73,7 +73,7 @@ func TestFaqIndexRequest(t *testing.T) {
 func TestStaticRequest(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/static/js/main.js", nil)
 	w := httptest.NewRecorder()
-	controllers.StaticHandler(controllers.IndexStatic()).ServeHTTP(w, req)
+	helpers.StaticHandler(controllers.IndexStatic()).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
@@ -88,5 +88,26 @@ func TestStaticRequest(t *testing.T) {
 	}
 	if len(dataString) == 0 {
 		t.Error("Expected body to contains 'main.js' content")
+	}
+}
+
+func TestSignUpRequest(t *testing.T) {
+	helpers.CurrentWorkingDirectory()
+	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/signup", nil)
+	w := httptest.NewRecorder()
+	helpers.HtmlHandler(controllers.Index(nil, "users/new.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	resp := w.Result()
+
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Error(err)
+	}
+	dataString := string(data)
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("Expected status %d; got %d", http.StatusOK, resp.StatusCode)
+	}
+	if !strings.Contains(dataString, "Welcome to Signup!") {
+		t.Error("Expected body to contains 'Welcome to Signup!'")
 	}
 }
