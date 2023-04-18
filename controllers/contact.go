@@ -6,9 +6,9 @@ import (
 	"github.com/go-chi/chi"
 )
 
-func (c *Contact) Create(r *http.Request) interface{} {
+func (c *Contact) Create(r *http.Request) (string, interface{}) {
 	id := chi.URLParam(r, "id")
-	return ContactData{
+	return "", ContactData{
 		Id: id,
 	}
 }

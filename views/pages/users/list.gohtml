@@ -1,0 +1,9 @@
+{{template "header" .}}
+
+{{if .Users}}
+    {{range .Users}}
+        <p>{{.FirstName}} - {{.Email}}</p>
+    {{end}}
+{{end}}
+
+{{template "footer" .}}
