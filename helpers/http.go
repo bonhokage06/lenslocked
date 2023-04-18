@@ -10,7 +10,7 @@ import (
 
 type Page struct {
 	Template *template.Template
-	DataFunc func(r *http.Request) (string, interface{})
+	DataFunc func(r *http.Request) ([]http.Cookie, interface{})
 }
 type Json struct {
 	DataFunc func(r *http.Request) interface{}
@@ -27,14 +27,35 @@ func Headers(w http.ResponseWriter, contentType string) {
 func HtmlHandler(s Page) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if s.DataFunc == nil {
-			s.DataFunc = func(r *http.Request) (string, interface{}) {
-				return "", nil
+			s.DataFunc = func(r *http.Request) ([]http.Cookie, interface{}) {
+				return nil, nil
 			}
 		}
-		path, data := s.DataFunc(r)
-		if path != "" {
-			http.Redirect(w, r, path, http.StatusSeeOther)
+		cookies, data := s.DataFunc(r)
+		if len(cookies) > 0 {
+			var path string
+			for _, cookie := range cookies {
+				//dont add path into cookies this is special cookie for redirection
+				if cookie.Name == "Path" {
+					path = cookie.Value
+					continue
+				}
+				cookie.Value = Encode(cookie.Value)
+				http.SetCookie(w, &cookie)
+			}
+			http.Redirect(w, r, path, http.StatusFound)
 			return
+		}
+		//check if loggin if url is not /auth
+		if r.URL.Path != "/auth" {
+			cookie, err := r.Cookie("Email")
+			if err == nil {
+				isLogin := len(Decode(cookie.Value)) > 0
+				if isLogin {
+					http.Redirect(w, r, "/auth", http.StatusFound)
+					return
+				}
+			}
 		}
 		err := s.Template.Execute(w, data)
 		if err != nil {

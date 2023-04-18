@@ -2,7 +2,7 @@ package pages
 
 import "embed"
 
-//go:embed *.gohtml partials/*.gohtml users/*.gohtml
+//go:embed *.gohtml partials/*.gohtml users/*.gohtml auth/*.gohtml
 var FS embed.FS
 
 //go:embed static/js/*.js

@@ -2,7 +2,7 @@ package controllers
 
 import "net/http"
 
-func (f *Faq) Create(r *http.Request) (string, interface{}) {
+func (f *Faq) Create(r *http.Request) ([]http.Cookie, interface{}) {
 	questions := []Questions{
 		{
 			Question: "What is Lenslocked?",
@@ -21,7 +21,7 @@ func (f *Faq) Create(r *http.Request) (string, interface{}) {
 			Answer:   `Email us at <a class="text-blue-500 hover:text-blue-800 hover:semibold transition ease-in-out duration-1000" href="mailto:bonhokage06@gmail.com">bonhokage06@gmail.com</a>`,
 		},
 	}
-	return "", FaqResponse{
+	return nil, FaqResponse{
 		Questions: questions,
 	}
 }

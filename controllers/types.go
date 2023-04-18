@@ -26,6 +26,7 @@ type Questions struct {
 }
 
 type FaqResponse struct {
+	IsLogin   bool
 	Questions []Questions
 }
 
@@ -33,17 +34,22 @@ type Message struct {
 	Status string
 	Body   string
 }
-
+type MessageResponse struct {
+	Message Message
+	IsLogin bool
+}
 type Users struct {
 }
 type UsersResponse struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Users    []models.User
-	Errors   []string `json:"errors"`
-	Message  Message
+	Email   string `json:"email"`
+	IsLogin bool
+	Users   []models.User
+	Errors  []string `json:"errors"`
 }
 
-type MessageResponse struct {
-	Message Message
+type Auth struct {
+}
+type AuthResponse struct {
+	IsLogin bool
+	Errors  []string `json:"errors"`
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/bonhokage06/lenslocked/views/pages"
 )
 
-func Html(dataFunc func(r *http.Request) (string, interface{}), path ...string) helpers.Page {
+func Html(dataFunc func(r *http.Request) ([]http.Cookie, interface{}), path ...string) helpers.Page {
 	template := templates.Html{}
 	tpl, err := template.ParseFs(pages.FS, path...)
 	if err != nil {

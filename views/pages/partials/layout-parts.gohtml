@@ -25,13 +25,20 @@
         <nav class="px-8 py-6 flex items-center text-white">
             <div class="pr-12 text-4xl bold font-seriff">Lenslocked</div>
             <div class="flex-grow invisible md:visible">
-                <a class="text(g font-semibold pr-8 hover:text-blue-100" href="/">Home</a>
-                <a class="text-lg font-semibold pr-8 hover:text-blue-100" href="/contact">Contact</a>
-                <a class="text-lg font-semibold pr-8 hover:text-blue-100" href="/faq">FAQ</a>
+                {{if not .IsLogin}}
+                    <a class="text(g font-semibold pr-8 hover:text-blue-100" href="/">Home</a>
+                    <a class="text-lg font-semibold pr-8 hover:text-blue-100" href="/contact">Contact</a>
+                    <a class="text-lg font-semibold pr-8 hover:text-blue-100" href="/faq">FAQ</a>                                
+                {{end}}
             </div>
             <div class="invisible md:visible">
-                <a class="pr-4" href="#">Sign in</a>
-                <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="/signup">Sign up</a>
+                {{if .IsLogin}}
+                    <a class="p-4 bg-red-700 hover:bg-red-600 rounded" href="/signout">Logout</a>
+                {{else}}
+                    <a class="pr-4" href="/signin">Sign in</a>
+                    <a class="p-4 bg-blue-700 hover:bg-blue-600 rounded" href="/signup">Sign up</a>
+                {{end}}
+
             </div>
             <button id="mobile-hamburger" class="p-4 space-y-2 bg-gray-600 rounded shadow md:invisible">
                 <span class="block w-8 h-0.5 bg-gray-100"></span>

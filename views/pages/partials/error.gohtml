@@ -1,0 +1,11 @@
+{{define "errors" }}
+    {{if .Errors}}
+        <div class="flex flex-col items-center bg-red-300 p-4 my-6 text-white">
+            <ul>
+                {{range .Errors}}
+                    <li>{{.}}</li>
+                {{end}}
+            </ul>
+        </div>    
+    {{end}}
+{{end}}
