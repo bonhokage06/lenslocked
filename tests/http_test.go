@@ -2,7 +2,7 @@ package tests
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -16,11 +16,11 @@ func TestHomeIndexRequest(t *testing.T) {
 	helpers.CurrentWorkingDirectory()
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/", nil)
 	w := httptest.NewRecorder()
-	helpers.HtmlHandler(controllers.Html(nil, "home.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	helpers.HtmlHandler(controllers.Html(nil, "home.gohtml", "partials/*")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error(err)
 	}
@@ -35,11 +35,11 @@ func TestHomeIndexRequest(t *testing.T) {
 func TestContactIndexRequest(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/contact", nil)
 	w := httptest.NewRecorder()
-	helpers.HtmlHandler(controllers.Html(nil, "contact.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	helpers.HtmlHandler(controllers.Html(nil, "contact.gohtml", "partials/*")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error(err)
 	}
@@ -54,11 +54,11 @@ func TestContactIndexRequest(t *testing.T) {
 func TestFaqIndexRequest(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/faq", nil)
 	w := httptest.NewRecorder()
-	helpers.HtmlHandler(controllers.Html(nil, "faq.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	helpers.HtmlHandler(controllers.Html(nil, "faq.gohtml", "partials/*")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error(err)
 	}
@@ -77,7 +77,7 @@ func TestStaticRequest(t *testing.T) {
 	resp := w.Result()
 
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error(err)
 	}
@@ -95,11 +95,11 @@ func TestSignUpRequest(t *testing.T) {
 	helpers.CurrentWorkingDirectory()
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/signup", nil)
 	w := httptest.NewRecorder()
-	helpers.HtmlHandler(controllers.Html(nil, "users/new.gohtml", "partials/layout-parts.gohtml")).ServeHTTP(w, req)
+	helpers.HtmlHandler(controllers.Html(nil, "users/new.gohtml", "partials/*")).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error(err)
 	}
