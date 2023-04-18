@@ -28,6 +28,36 @@ func (u *Users) Show(r *http.Request) (string, interface{}) {
 	}
 	return "", user
 }
+func (u *Users) SignIn(r *http.Request) (string, interface{}) {
+	if r.Method != "POST" {
+		return "", UsersResponse{
+			Errors: []string{"Method not allowed"},
+		}
+	}
+	email := r.FormValue("email")
+	if email == "" && helpers.IsValidEmail(email) {
+		return "nil", UsersResponse{
+			Errors: []string{"Email is required"},
+		}
+	}
+	password := r.FormValue("password")
+	if password == "" {
+		return "", UsersResponse{
+			Errors: []string{"Password is required"},
+		}
+	}
+	userModel := models.User{
+		Email: email,
+		Hash:  password,
+	}
+	isValid := userModel.SignIn()
+	if isValid {
+		return fmt.Sprintf("/message?status=%s&message=%s", "Success", "User Sign in successfully."), nil
+	}
+	return "", UsersResponse{
+		Errors: []string{"Invalid email or password"},
+	}
+}
 func (u *Users) Create(r *http.Request) (string, interface{}) {
 	if r.Method != "POST" {
 		return "", UsersResponse{

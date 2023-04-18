@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/bonhokage06/lenslocked/database"
 	"github.com/bonhokage06/lenslocked/helpers"
 	"github.com/pocketbase/dbx"
@@ -36,4 +38,16 @@ func (u User) Create() error {
 		return err
 	}
 	return nil
+}
+
+// write a function that signin user
+func (u User) SignIn() bool {
+	var user User
+	err := database.Db.Select("*").From("users").Where(dbx.HashExp{"email": u.Email}).One(&user)
+	if err != nil {
+		return false
+	}
+	fmt.Println(user.Hash, u.Hash)
+	isValid := helpers.ComparePasswords(user.Hash, u.Hash)
+	return isValid
 }

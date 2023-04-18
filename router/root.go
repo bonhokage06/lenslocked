@@ -27,6 +27,8 @@ func (router *Router) New() *chi.Mux {
 	r.Get("/contact/{id}", HtmlHandler(controllers.Html(Contact.Create, "contact.gohtml", "partials/layout-parts.gohtml")))
 	r.Get("/faq", HtmlHandler(controllers.Html(Faq.Create, "faq.gohtml", "partials/layout-parts.gohtml")))
 	r.Get("/signup", HtmlHandler(controllers.Html(Users.Index, "users/new.gohtml", "partials/layout-parts.gohtml")))
+	r.Get("/signin", HtmlHandler(controllers.Html(Users.Index, "users/signin.gohtml", "partials/layout-parts.gohtml")))
+	r.Post("/signin", HtmlHandler((controllers.Html(Users.SignIn, "users/signin.gohtml", "partials/layout-parts.gohtml"))))
 	r.Post("/users/create", HtmlHandler((controllers.Html(Users.Create, "users/new.gohtml", "partials/layout-parts.gohtml"))))
 	r.Get("/message", HtmlHandler((controllers.Html(Message.Index, "partials/message.gohtml", "partials/layout-parts.gohtml"))))
 	r.Get("/users", HtmlHandler(controllers.Html(Users.Show, "users/list.gohtml", "partials/layout-parts.gohtml")))
