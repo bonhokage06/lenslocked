@@ -60,6 +60,7 @@ func (u *Users) SignIn(r *http.Request) ([]http.Cookie, interface{}) {
 				Value:    email,
 				MaxAge:   3600,
 				HttpOnly: true,
+				Secure:   true,
 				SameSite: http.SameSiteLaxMode,
 				Path:     "/",
 			},
@@ -77,6 +78,8 @@ func (u *Users) SignOut(r *http.Request) ([]http.Cookie, interface{}) {
 			Name:     "Email",
 			Expires:  time.Now().Add(-7 * 24 * time.Hour),
 			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
 		},
 	}
 	return cookies, nil
@@ -116,8 +119,11 @@ func (u *Users) Create(r *http.Request) ([]http.Cookie, interface{}) {
 	}
 	cookies := []http.Cookie{
 		{
-			Name:  "Path",
-			Value: fmt.Sprintf("/message?status=%s&message=%s", "Success", "User added succcessfully."),
+			Name:     "Path",
+			Value:    fmt.Sprintf("/message?status=%s&message=%s", "Success", "User added succcessfully."),
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
 		},
 	}
 	return cookies, UsersResponse{}
