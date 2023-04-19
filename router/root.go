@@ -2,14 +2,11 @@ package router
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/bonhokage06/lenslocked/controllers"
 	"github.com/bonhokage06/lenslocked/helpers"
-	"github.com/bonhokage06/lenslocked/models"
+	middleware "github.com/bonhokage06/lenslocked/middleware"
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	"github.com/gorilla/csrf"
 )
 
 type Router struct {
@@ -17,8 +14,8 @@ type Router struct {
 
 func (router *Router) New() http.Handler {
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
-	r.Use(middleware.CleanPath)
+	r.Use(middleware.Logger())
+	r.Use(middleware.CleanPath())
 	HtmlHandler := helpers.HtmlHandler
 	StaticHandler := helpers.StaticHandler
 	Contact := controllers.Contact{}
@@ -42,47 +39,5 @@ func (router *Router) New() http.Handler {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
-	csrfKey := []byte("spelspaelspel2soekslo30soe3scwade")
-	csrfMiddleware := csrf.Protect(csrfKey, csrf.Secure(false))
-	return csrfMiddleware(AuthMiddleware(r))
-}
-
-// create auth middleware
-func AuthMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//do something
-		rememberToken := helpers.GetCookie(r, "remember_token")
-		if !strings.Contains(r.URL.Path, "/auth") {
-			if len(rememberToken) == 0 {
-				next.ServeHTTP(w, r)
-				return
-			}
-			sessionModel := models.Session{
-				RememberToken: rememberToken,
-			}
-			isValidSession, err := sessionModel.Check()
-			if err == nil {
-				isLogin := isValidSession
-				if isLogin {
-					http.Redirect(w, r, "/auth", http.StatusFound)
-					return
-				}
-			}
-		}
-		if strings.Contains(r.URL.Path, "/auth") {
-			if len(rememberToken) == 0 {
-				http.Redirect(w, r, "/", http.StatusFound)
-				return
-			}
-			sessionModel := models.Session{
-				RememberToken: rememberToken,
-			}
-			isValidSession, err := sessionModel.Check()
-			if err != nil || !isValidSession {
-				http.Redirect(w, r, "/", http.StatusFound)
-				return
-			}
-		}
-		next.ServeHTTP(w, r)
-	})
+	return middleware.Csrf(middleware.IsAuth(r))
 }

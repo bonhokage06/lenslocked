@@ -1,16 +1,19 @@
 package helpers
 
 import (
+	"crypto/sha256"
 	"encoding/base64"
 	"net/http"
+	"time"
 )
 
 func Encode(value string) string {
-	return base64.StdEncoding.EncodeToString([]byte(value))
+	tokenHash := sha256.Sum256([]byte(value))
+	return base64.URLEncoding.EncodeToString(tokenHash[:])
 }
 
 func Decode(value string) string {
-	decoded, _ := base64.StdEncoding.DecodeString(value)
+	decoded, _ := base64.URLEncoding.DecodeString(value)
 	return string(decoded)
 }
 
@@ -44,4 +47,19 @@ func SetCookiesAndReturnPath(w http.ResponseWriter, cookies []http.Cookie) strin
 		http.SetCookie(w, &cookie)
 	}
 	return path
+}
+
+// delete a cookie
+func DeleteCookie(w http.ResponseWriter, name string) {
+	cookie := http.Cookie{
+		Name:     name,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   -1,
+		Expires:  time.Now().Add(-time.Hour * 24 * 365),
+	}
+	http.SetCookie(w, &cookie)
 }
