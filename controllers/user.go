@@ -52,12 +52,21 @@ func (u *Users) SignIn(r *http.Request) ([]http.Cookie, interface{}) {
 		Email: email,
 		Hash:  password,
 	}
-	isValid := userModel.Authenticate()
+	isValid, User := userModel.Authenticate()
 	if isValid {
+		sessionModel := models.Session{
+			UserId: User.Id,
+		}
+		session, err := sessionModel.Create()
+		if err != nil {
+			return nil, UsersResponse{
+				Errors: []string{err.Error()},
+			}
+		}
 		cookies := []http.Cookie{
 			{
-				Name:     "Email",
-				Value:    email,
+				Name:     "remember_token",
+				Value:    session.RememberToken,
 				MaxAge:   3600,
 				HttpOnly: true,
 				Secure:   true,
@@ -72,11 +81,30 @@ func (u *Users) SignIn(r *http.Request) ([]http.Cookie, interface{}) {
 	}
 }
 func (u *Users) SignOut(r *http.Request) ([]http.Cookie, interface{}) {
-	//delete cookie Email
+	//get remember_token from cookie
+	cookie, err := r.Cookie("remember_token")
+	if err != nil {
+		return nil, UsersResponse{
+			Errors: []string{err.Error()},
+		}
+	}
+	//delete session
+	sessionModel := models.Session{
+		RememberToken: cookie.Value,
+	}
+	err = sessionModel.Delete()
+	if err != nil {
+		return nil, UsersResponse{
+			Errors: []string{err.Error()},
+		}
+	}
+	//delete cookie remember_token
 	cookies := []http.Cookie{
 		{
-			Name:     "Email",
-			Expires:  time.Now().Add(-7 * 24 * time.Hour),
+			Name:     "remember_token",
+			Value:    "",
+			Path:     "/",
+			Expires:  time.Now().Add(-time.Hour * 24 * 365),
 			HttpOnly: true,
 			Secure:   true,
 			SameSite: http.SameSiteLaxMode,

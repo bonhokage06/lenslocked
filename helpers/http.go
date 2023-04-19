@@ -1,10 +1,11 @@
 package helpers
 
 import (
+	"bytes"
 	"encoding/json"
 	"html/template"
+	"io"
 	"net/http"
-	"strings"
 
 	"github.com/gorilla/csrf"
 )
@@ -42,22 +43,10 @@ func HtmlHandler(s Page) http.HandlerFunc {
 					path = cookie.Value
 					continue
 				}
-				cookie.Value = Encode(cookie.Value)
 				http.SetCookie(w, &cookie)
 			}
 			http.Redirect(w, r, path, http.StatusFound)
 			return
-		}
-		//check if loggin if url is not contains /auth
-		if !strings.Contains(r.URL.Path, "/auth") {
-			cookie, err := r.Cookie("Email")
-			if err == nil {
-				isLogin := len(Decode(cookie.Value)) > 0
-				if isLogin {
-					http.Redirect(w, r, "/auth", http.StatusFound)
-					return
-				}
-			}
 		}
 		//add csrf token
 		tpl, err := s.Template.Clone()
@@ -69,18 +58,21 @@ func HtmlHandler(s Page) http.HandlerFunc {
 				return csrf.TemplateField(r)
 			},
 			"isLogin": func() bool {
-				cookie, err := r.Cookie("Email")
+				cookie, err := r.Cookie("remember_token")
 				if err != nil {
 					return false
 				}
-				return len(Decode(cookie.Value)) > 0
+				return len(cookie.Value) > 0
 			},
 		})
 		// execute template
-		err = tpl.Execute(w, data)
+		var buf bytes.Buffer
+		err = tpl.Execute(&buf, data)
 		if err != nil {
 			http.Error(w, "There was an error rendering the page.", http.StatusInternalServerError)
+			return
 		}
+		io.Copy(w, &buf)
 	}
 }
 func JsonHandler(s Json) http.HandlerFunc {

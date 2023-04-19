@@ -39,12 +39,12 @@ func (u User) Create() error {
 }
 
 // write a function that signin user
-func (u User) Authenticate() bool {
+func (u User) Authenticate() (bool, User) {
 	var user User
 	err := database.Db.Select("*").From("users").Where(dbx.HashExp{"email": u.Email}).One(&user)
 	if err != nil {
-		return false
+		return false, User{}
 	}
 	isValid := helpers.ComparePasswords(user.Hash, u.Hash)
-	return isValid
+	return isValid, user
 }

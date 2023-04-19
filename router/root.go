@@ -2,9 +2,11 @@ package router
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/bonhokage06/lenslocked/controllers"
 	"github.com/bonhokage06/lenslocked/helpers"
+	"github.com/bonhokage06/lenslocked/models"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/gorilla/csrf"
@@ -31,7 +33,7 @@ func (router *Router) New() http.Handler {
 	r.Get("/signup", HtmlHandler(controllers.Html(Users.Index, "users/new.gohtml", "partials/*")))
 	r.Get("/signin", HtmlHandler(controllers.Html(Users.Index, "users/signin.gohtml", "partials/*")))
 	r.Post("/signin", HtmlHandler((controllers.Html(Users.SignIn, "users/signin.gohtml", "partials/*"))))
-	r.Post("/signout", HtmlHandler(controllers.Html(Users.SignOut, "home.gohtml", "partials/*")))
+	r.Post("/auth/signout", HtmlHandler(controllers.Html(Users.SignOut, "home.gohtml", "partials/*")))
 	r.Post("/users/create", HtmlHandler((controllers.Html(Users.Create, "users/new.gohtml", "partials/*"))))
 	r.Get("/message", HtmlHandler((controllers.Html(Message.Index, "partials/message.gohtml", "partials/layout-parts.gohtml"))))
 	r.Get("/users", HtmlHandler(controllers.Html(Users.Show, "users/list.gohtml", "partials/layout-parts.gohtml")))
@@ -42,5 +44,46 @@ func (router *Router) New() http.Handler {
 	})
 	csrfKey := []byte("spelspaelspel2soekslo30soe3scwade")
 	csrfMiddleware := csrf.Protect(csrfKey, csrf.Secure(false))
-	return csrfMiddleware(r)
+	return csrfMiddleware(AuthMiddleware(r))
+}
+
+// create auth middleware
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//do something
+		if !strings.Contains(r.URL.Path, "/auth") {
+			cookie, err := r.Cookie("remember_token")
+			if err != nil {
+				next.ServeHTTP(w, r)
+				return
+			}
+			sessionModel := models.Session{
+				RememberToken: cookie.Value,
+			}
+			isValidSession, err := sessionModel.Check()
+			if err == nil {
+				isLogin := isValidSession
+				if isLogin {
+					http.Redirect(w, r, "/auth", http.StatusFound)
+					return
+				}
+			}
+		}
+		if strings.Contains(r.URL.Path, "/auth") {
+			cookie, err := r.Cookie("remember_token")
+			if err != nil {
+				http.Redirect(w, r, "/", http.StatusFound)
+				return
+			}
+			sessionModel := models.Session{
+				RememberToken: cookie.Value,
+			}
+			isValidSession, err := sessionModel.Check()
+			if err != nil || !isValidSession {
+				http.Redirect(w, r, "/", http.StatusFound)
+				return
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
 }

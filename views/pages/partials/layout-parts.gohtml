@@ -33,7 +33,7 @@
             </div>
             <div class="invisible md:visible">
                 {{if eq true isLogin}}
-                    <form method="POST" action="/signout">
+                    <form method="POST" action="/auth/signout">
                         <div class="hidden">
                             {{csrfField}}
                         </div>         
