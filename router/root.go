@@ -7,12 +7,13 @@ import (
 	"github.com/bonhokage06/lenslocked/helpers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/gorilla/csrf"
 )
 
 type Router struct {
 }
 
-func (router *Router) New() *chi.Mux {
+func (router *Router) New() http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.CleanPath)
@@ -30,7 +31,7 @@ func (router *Router) New() *chi.Mux {
 	r.Get("/signup", HtmlHandler(controllers.Html(Users.Index, "users/new.gohtml", "partials/*")))
 	r.Get("/signin", HtmlHandler(controllers.Html(Users.Index, "users/signin.gohtml", "partials/*")))
 	r.Post("/signin", HtmlHandler((controllers.Html(Users.SignIn, "users/signin.gohtml", "partials/*"))))
-	r.Get("/signout", HtmlHandler(controllers.Html(Users.SignOut, "home.gohtml", "partials/*")))
+	r.Post("/signout", HtmlHandler(controllers.Html(Users.SignOut, "home.gohtml", "partials/*")))
 	r.Post("/users/create", HtmlHandler((controllers.Html(Users.Create, "users/new.gohtml", "partials/*"))))
 	r.Get("/message", HtmlHandler((controllers.Html(Message.Index, "partials/message.gohtml", "partials/layout-parts.gohtml"))))
 	r.Get("/users", HtmlHandler(controllers.Html(Users.Show, "users/list.gohtml", "partials/layout-parts.gohtml")))
@@ -39,5 +40,7 @@ func (router *Router) New() *chi.Mux {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
-	return r
+	csrfKey := []byte("spelspaelspel2soekslo30soe3scwade")
+	csrfMiddleware := csrf.Protect(csrfKey, csrf.Secure(false))
+	return csrfMiddleware(r)
 }

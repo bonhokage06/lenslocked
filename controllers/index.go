@@ -9,8 +9,8 @@ import (
 )
 
 func Html(dataFunc func(r *http.Request) ([]http.Cookie, interface{}), path ...string) helpers.Page {
-	template := templates.Html{}
-	tpl, err := template.ParseFs(pages.FS, path...)
+	htmlTemplate := templates.Html{}
+	tpl, err := htmlTemplate.ParseFs(pages.FS, path...)
 	if err != nil {
 		panic(err)
 	}

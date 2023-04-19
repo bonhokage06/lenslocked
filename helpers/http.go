@@ -1,11 +1,11 @@
 package helpers
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"html/template"
 	"net/http"
-	"time"
+
+	"github.com/gorilla/csrf"
 )
 
 type Page struct {
@@ -26,6 +26,7 @@ func Headers(w http.ResponseWriter, contentType string) {
 
 func HtmlHandler(s Page) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// create DataFunc if not exist
 		if s.DataFunc == nil {
 			s.DataFunc = func(r *http.Request) ([]http.Cookie, interface{}) {
 				return nil, nil
@@ -57,6 +58,13 @@ func HtmlHandler(s Page) http.HandlerFunc {
 				}
 			}
 		}
+		//add csrf token
+		s.Template.Funcs(template.FuncMap{
+			"csrfField": func() template.HTML {
+				return csrf.TemplateField(r)
+			},
+		})
+		// execute template
 		err := s.Template.Execute(w, data)
 		if err != nil {
 			panic(err)
@@ -84,38 +92,4 @@ func StaticHandler(s Static) http.HandlerFunc {
 		w.Header().Set("Referrer-Policy", "no-referrer")
 		s.Fs.ServeHTTP(w, r)
 	}
-}
-
-func SetFlash(w http.ResponseWriter, name string, value string) {
-	c := &http.Cookie{Name: name, Value: encode([]byte(value))}
-	http.SetCookie(w, c)
-}
-
-func GetFlash(w http.ResponseWriter, r *http.Request, name string) ([]byte, error) {
-	c, err := r.Cookie(name)
-	if err != nil {
-		switch err {
-		case http.ErrNoCookie:
-			return nil, nil
-		default:
-			return nil, err
-		}
-	}
-	value, err := decode(c.Value)
-	if err != nil {
-		return nil, err
-	}
-	dc := &http.Cookie{Name: name, MaxAge: -1, Expires: time.Unix(1, 0)}
-	http.SetCookie(w, dc)
-	return value, nil
-}
-
-// -------------------------
-
-func encode(src []byte) string {
-	return base64.URLEncoding.EncodeToString(src)
-}
-
-func decode(src string) ([]byte, error) {
-	return base64.URLEncoding.DecodeString(src)
 }

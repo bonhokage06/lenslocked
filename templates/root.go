@@ -4,30 +4,21 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
-
-	"github.com/bonhokage06/lenslocked/constants"
-	"github.com/bonhokage06/lenslocked/helpers"
+	"strings"
 )
 
-func (t *Html) Parse(path string) (*template.Template, error) {
-	tpl, err := t.Template.ParseFiles(path)
-	if err != nil {
-		return nil, fmt.Errorf("error parsing template: %v", err)
-	}
-	return tpl, nil
-}
 func (t *Html) ParseFs(fs fs.FS, patterns ...string) (*template.Template, error) {
-	tpl, err := t.Template.ParseFS(fs, patterns...)
+	//split patterns[0] to get the name of the template
+	fileName := strings.Split(patterns[0], "/")
+	tpl := template.New(fileName[len(fileName)-1])
+	tpl = tpl.Funcs(template.FuncMap{
+		"csrfField": func() template.HTML {
+			return `<-- todo csrf field -->`
+		},
+	})
+	tpl, err := tpl.ParseFS(fs, patterns...)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing template: %v", err)
 	}
 	return tpl, nil
-}
-func (t *Html) Execute(data interface{}) error {
-	helpers.Headers(t.Writer, constants.TextHtml)
-	err := t.Template.Execute(t.Writer, data)
-	if err != nil {
-		return fmt.Errorf("error executing template: %v", err)
-	}
-	return nil
 }
