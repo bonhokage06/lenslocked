@@ -36,15 +36,7 @@ func HtmlHandler(s Page) http.HandlerFunc {
 		}
 		cookies, data := s.DataFunc(r)
 		if len(cookies) > 0 {
-			var path string
-			for _, cookie := range cookies {
-				//dont add path into cookies this is special cookie for redirection
-				if cookie.Name == "Path" {
-					path = cookie.Value
-					continue
-				}
-				http.SetCookie(w, &cookie)
-			}
+			path := SetCookiesAndReturnPath(w, cookies)
 			http.Redirect(w, r, path, http.StatusFound)
 			return
 		}
@@ -58,11 +50,8 @@ func HtmlHandler(s Page) http.HandlerFunc {
 				return csrf.TemplateField(r)
 			},
 			"isLogin": func() bool {
-				cookie, err := r.Cookie("remember_token")
-				if err != nil {
-					return false
-				}
-				return len(cookie.Value) > 0
+				rememberToken := GetCookie(r, "remember_token")
+				return len(rememberToken) > 0
 			},
 		})
 		// execute template

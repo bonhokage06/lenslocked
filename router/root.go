@@ -51,14 +51,14 @@ func (router *Router) New() http.Handler {
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//do something
+		rememberToken := helpers.GetCookie(r, "remember_token")
 		if !strings.Contains(r.URL.Path, "/auth") {
-			cookie, err := r.Cookie("remember_token")
-			if err != nil {
+			if len(rememberToken) == 0 {
 				next.ServeHTTP(w, r)
 				return
 			}
 			sessionModel := models.Session{
-				RememberToken: cookie.Value,
+				RememberToken: rememberToken,
 			}
 			isValidSession, err := sessionModel.Check()
 			if err == nil {
@@ -70,13 +70,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			}
 		}
 		if strings.Contains(r.URL.Path, "/auth") {
-			cookie, err := r.Cookie("remember_token")
-			if err != nil {
+			if len(rememberToken) == 0 {
 				http.Redirect(w, r, "/", http.StatusFound)
 				return
 			}
 			sessionModel := models.Session{
-				RememberToken: cookie.Value,
+				RememberToken: rememberToken,
 			}
 			isValidSession, err := sessionModel.Check()
 			if err != nil || !isValidSession {
