@@ -41,15 +41,13 @@ type MessageResponse struct {
 type Users struct {
 }
 type UsersResponse struct {
-	Email   string `json:"email"`
-	IsLogin bool
-	Users   []models.User
-	Errors  []string `json:"errors"`
+	Email  string `json:"email"`
+	Users  []models.User
+	Errors []string `json:"errors"`
 }
 
 type Auth struct {
 }
 type AuthResponse struct {
-	IsLogin bool
-	Errors  []string `json:"errors"`
+	Errors []string `json:"errors"`
 }

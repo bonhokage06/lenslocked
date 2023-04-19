@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"io/fs"
@@ -12,8 +13,11 @@ func (t *Html) ParseFs(fs fs.FS, patterns ...string) (*template.Template, error)
 	fileName := strings.Split(patterns[0], "/")
 	tpl := template.New(fileName[len(fileName)-1])
 	tpl = tpl.Funcs(template.FuncMap{
-		"csrfField": func() template.HTML {
-			return `<-- todo csrf field -->`
+		"csrfField": func() (template.HTML, error) {
+			return `<-- todo csrf field -->`, errors.New("csrfField not implemented yet")
+		},
+		"isLogin": func() bool {
+			return false
 		},
 	})
 	tpl, err := tpl.ParseFS(fs, patterns...)

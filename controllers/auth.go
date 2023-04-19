@@ -12,11 +12,7 @@ func (a *Auth) Index(r *http.Request) ([]http.Cookie, interface{}) {
 				Path:  "/",
 			},
 		}
-		return cookies, AuthResponse{
-			IsLogin: false,
-		}
+		return cookies, nil
 	}
-	return nil, AuthResponse{
-		IsLogin: true,
-	}
+	return nil, nil
 }
