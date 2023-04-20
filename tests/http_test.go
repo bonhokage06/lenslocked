@@ -10,14 +10,15 @@ import (
 
 	"github.com/bonhokage06/lenslocked/controllers"
 	"github.com/bonhokage06/lenslocked/helpers"
+	middlewares "github.com/bonhokage06/lenslocked/middleware"
 )
 
 func TestHomeIndexRequest(t *testing.T) {
 	helpers.CurrentWorkingDirectory()
-	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/", nil)
-	w := httptest.NewRecorder()
-	helpers.HtmlHandler(controllers.Html(nil, "home.gohtml", "partials/*")).ServeHTTP(w, req)
-	resp := w.Result()
+	resp, err := http.Get("http://localhost:3000")
+	if err != nil {
+		t.Error(err)
+	}
 
 	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
@@ -33,11 +34,10 @@ func TestHomeIndexRequest(t *testing.T) {
 	}
 }
 func TestContactIndexRequest(t *testing.T) {
-	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/contact", nil)
-	w := httptest.NewRecorder()
-	helpers.HtmlHandler(controllers.Html(nil, "contact.gohtml", "partials/*")).ServeHTTP(w, req)
-	resp := w.Result()
-
+	resp, err := http.Get("http://localhost:3000/contact")
+	if err != nil {
+		t.Error(err)
+	}
 	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -52,11 +52,10 @@ func TestContactIndexRequest(t *testing.T) {
 	}
 }
 func TestFaqIndexRequest(t *testing.T) {
-	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/faq", nil)
-	w := httptest.NewRecorder()
-	helpers.HtmlHandler(controllers.Html(nil, "faq.gohtml", "partials/*")).ServeHTTP(w, req)
-	resp := w.Result()
-
+	resp, err := http.Get("http://localhost:3000/faq")
+	if err != nil {
+		t.Error(err)
+	}
 	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -73,7 +72,7 @@ func TestFaqIndexRequest(t *testing.T) {
 func TestStaticRequest(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/static/js/main.js", nil)
 	w := httptest.NewRecorder()
-	helpers.StaticHandler(controllers.Static()).ServeHTTP(w, req)
+	middlewares.StaticHandler(controllers.Static()).ServeHTTP(w, req)
 	resp := w.Result()
 
 	defer resp.Body.Close()
@@ -93,11 +92,10 @@ func TestStaticRequest(t *testing.T) {
 
 func TestSignUpRequest(t *testing.T) {
 	helpers.CurrentWorkingDirectory()
-	req := httptest.NewRequest(http.MethodGet, "http://localhost:3000/signup", nil)
-	w := httptest.NewRecorder()
-	helpers.HtmlHandler(controllers.Html(nil, "users/new.gohtml", "partials/*")).ServeHTTP(w, req)
-	resp := w.Result()
-
+	resp, err := http.Get("http://localhost:3000/signup")
+	if err != nil {
+		t.Error(err)
+	}
 	defer resp.Body.Close()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
