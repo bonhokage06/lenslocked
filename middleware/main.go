@@ -3,51 +3,39 @@ package middlewares
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
+	"github.com/bonhokage06/lenslocked/context"
 	"github.com/bonhokage06/lenslocked/helpers"
 	"github.com/bonhokage06/lenslocked/models"
 	"github.com/go-chi/chi/middleware"
 	"github.com/gorilla/csrf"
 )
 
+// create check user middleware
+func SetUser(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rememberToken := helpers.GetCookie(r, "remember_token")
+		sessionModel := models.Session{
+			RememberToken: rememberToken,
+		}
+		session, _ := sessionModel.Check()
+		ctx := context.WithUser(r.Context(), &session)
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
+	})
+}
+
 // create auth middleware
 func IsAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//do something
-		rememberToken := helpers.GetCookie(r, "remember_token")
-		if !strings.Contains(r.URL.Path, "/auth") {
-			if len(rememberToken) == 0 {
-				next.ServeHTTP(w, r)
+		user := context.User(r.Context())
+		fmt.Println(user)
+		if user != nil {
+			isLoggin := user.Email != ""
+			if isLoggin {
+				http.Redirect(w, r, "/auth", http.StatusFound)
 				return
-			}
-			sessionModel := models.Session{
-				RememberToken: rememberToken,
-			}
-			session, err := sessionModel.Check()
-			fmt.Println(session.Email)
-			if err == nil {
-				isLogin := session.Email != ""
-				if isLogin {
-					http.Redirect(w, r, "/auth", http.StatusFound)
-					return
-				}
 			} else {
-				helpers.DeleteCookie(w, "remember_token")
-				http.Redirect(w, r, "/", http.StatusFound)
-			}
-		}
-		if strings.Contains(r.URL.Path, "/auth") {
-			if len(rememberToken) == 0 {
-				http.Redirect(w, r, "/", http.StatusFound)
-				return
-			}
-			sessionModel := models.Session{
-				RememberToken: rememberToken,
-			}
-			session, err := sessionModel.Check()
-			if err != nil || session.Email == "" {
-				helpers.DeleteCookie(w, "remember_token")
 				http.Redirect(w, r, "/", http.StatusFound)
 				return
 			}

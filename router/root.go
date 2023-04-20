@@ -16,6 +16,9 @@ func (router *Router) New() http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger())
 	r.Use(middleware.CleanPath())
+	r.Use(middleware.Csrf)
+	r.Use(middleware.SetUser)
+	r.Use(middleware.IsAuth)
 	HtmlHandler := helpers.HtmlHandler
 	StaticHandler := helpers.StaticHandler
 	Contact := controllers.Contact{}
@@ -39,5 +42,5 @@ func (router *Router) New() http.Handler {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
-	return middleware.Csrf(middleware.IsAuth(r))
+	return r
 }
