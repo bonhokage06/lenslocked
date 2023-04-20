@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -23,9 +24,10 @@ func IsAuth(next http.Handler) http.Handler {
 			sessionModel := models.Session{
 				RememberToken: rememberToken,
 			}
-			isValidSession, err := sessionModel.Check()
+			session, err := sessionModel.Check()
+			fmt.Println(session.Email)
 			if err == nil {
-				isLogin := isValidSession
+				isLogin := session.Email != ""
 				if isLogin {
 					http.Redirect(w, r, "/auth", http.StatusFound)
 					return
@@ -43,8 +45,8 @@ func IsAuth(next http.Handler) http.Handler {
 			sessionModel := models.Session{
 				RememberToken: rememberToken,
 			}
-			isValidSession, err := sessionModel.Check()
-			if err != nil || !isValidSession {
+			session, err := sessionModel.Check()
+			if err != nil || session.Email == "" {
 				helpers.DeleteCookie(w, "remember_token")
 				http.Redirect(w, r, "/", http.StatusFound)
 				return

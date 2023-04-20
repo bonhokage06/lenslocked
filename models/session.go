@@ -8,8 +8,13 @@ import (
 )
 
 type Session struct {
+	Email         string `db:"email"`
 	UserId        int    `db:"user_id"`
 	RememberToken string `db:"remember_token"`
+}
+type UserSession struct {
+	Email  string `db:"email"`
+	UserId int    `db:"user_id"`
 }
 
 // create a session
@@ -45,11 +50,13 @@ func (s Session) Delete() error {
 }
 
 // check if a session is valid
-func (s Session) Check() (bool, error) {
-	var session Session
-	err := database.Db.Select("*").From("sessions").Where(dbx.HashExp{"remember_token": helpers.Encode(s.RememberToken)}).One(&session)
+func (s Session) Check() (UserSession, error) {
+	var userSession UserSession
+	query := database.Db.NewQuery("SELECT email,user_id FROM users JOIN sessions ON users.id=sessions.user_id WHERE remember_token = {:remember_token}")
+	query.Bind(dbx.Params{"remember_token": helpers.Encode(s.RememberToken)})
+	err := query.One(&userSession)
 	if err != nil {
-		return false, err
+		return userSession, err
 	}
-	return true, nil
+	return userSession, nil
 }
