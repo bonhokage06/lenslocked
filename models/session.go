@@ -52,7 +52,7 @@ func (s Session) Delete() error {
 // check if a session is valid
 func (s Session) Check() (UserSession, error) {
 	var userSession UserSession
-	query := database.Db.NewQuery("SELECT email,user_id FROM users JOIN sessions ON users.id=sessions.user_id WHERE remember_token = {:remember_token}")
+	query := database.Db.NewQuery("SELECT email,user_id FROM users JOIN sessions ON users.id=sessions.user_id WHERE remember_token = {:remember_token} LIMIT 1")
 	query.Bind(dbx.Params{"remember_token": helpers.Encode(s.RememberToken)})
 	err := query.One(&userSession)
 	if err != nil {
