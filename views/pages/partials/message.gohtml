@@ -1,6 +1,10 @@
 {{ template "header" .}}
 <div class="flex justify-center flex-col items-center text-center">
-    <div class="w-1/2 p-6 bg-red-600 rounded text-white">
+    {{if eq .Message.Status "Success"}}
+        <div class="w-1/2 p-6 bg-green-600 rounded text-white">
+    {{else}}
+        <div class="w-1/2 p-6 bg-red-600 rounded text-white">
+    {{end}}
         <h1 class="text-2xl m-2">{{.Message.Status}}</h1>
         <p class="text-semibold">{{.Message.Body}}</p>    
     </div>

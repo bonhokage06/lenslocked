@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	emailService "github.com/bonhokage06/lenslocked/email"
 	"github.com/bonhokage06/lenslocked/helpers"
 	"github.com/bonhokage06/lenslocked/models"
 )
@@ -149,6 +150,34 @@ func (u *Users) Create(r *http.Request) ([]http.Cookie, interface{}) {
 		{
 			Name:     "Path",
 			Value:    fmt.Sprintf("/message?status=%s&message=%s", "Success", "User added succcessfully."),
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
+		},
+	}
+	return cookies, UsersResponse{}
+}
+
+// a function the implements forgot password and send email
+func (u *Users) ForgotPassword(r *http.Request) ([]http.Cookie, interface{}) {
+	if r.Method != "POST" {
+		return nil, UsersResponse{
+			Errors: []string{"Method not allowed"},
+		}
+	}
+	email := r.FormValue("email")
+	if email == "" && helpers.IsValidEmail(email) {
+		return nil, UsersResponse{
+			Errors: []string{"Email is required"},
+		}
+	}
+	go func() {
+		emailService.Send(email)
+	}()
+	cookies := []http.Cookie{
+		{
+			Name:     "Path",
+			Value:    fmt.Sprintf("/message?status=%s&message=%s", "Success", "Email sent successfully."),
 			HttpOnly: true,
 			Secure:   true,
 			SameSite: http.SameSiteLaxMode,
