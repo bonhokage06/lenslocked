@@ -3,6 +3,7 @@ package middlewares
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/bonhokage06/lenslocked/context"
 	"github.com/bonhokage06/lenslocked/helpers"
@@ -29,13 +30,14 @@ func SetUser(next http.Handler) http.Handler {
 func IsAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := context.User(r.Context())
-		fmt.Println(user)
+		path := r.URL.Path
+		fmt.Println("path", path)
 		if user != nil {
 			isLoggin := user.Email != ""
-			if isLoggin {
+			if isLoggin && !strings.Contains(path, "auth") {
 				http.Redirect(w, r, "/auth", http.StatusFound)
 				return
-			} else {
+			} else if !isLoggin && strings.Contains(path, "auth") {
 				http.Redirect(w, r, "/", http.StatusFound)
 				return
 			}
