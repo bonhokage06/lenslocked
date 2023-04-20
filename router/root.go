@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/bonhokage06/lenslocked/controllers"
-	"github.com/bonhokage06/lenslocked/helpers"
 	middleware "github.com/bonhokage06/lenslocked/middleware"
 	"github.com/go-chi/chi"
 )
@@ -19,8 +18,8 @@ func (router *Router) New() http.Handler {
 	r.Use(middleware.Csrf)
 	r.Use(middleware.SetUser)
 	r.Use(middleware.IsAuth)
-	HtmlHandler := helpers.HtmlHandler
-	StaticHandler := helpers.StaticHandler
+	HtmlHandler := middleware.HtmlHandler
+	StaticHandler := middleware.StaticHandler
 	Contact := controllers.Contact{}
 	Faq := controllers.Faq{}
 	Users := controllers.Users{}

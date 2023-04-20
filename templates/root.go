@@ -6,6 +6,8 @@ import (
 	"html/template"
 	"io/fs"
 	"strings"
+
+	"github.com/bonhokage06/lenslocked/models"
 )
 
 func (t *Html) ParseFs(fs fs.FS, patterns ...string) (*template.Template, error) {
@@ -16,8 +18,8 @@ func (t *Html) ParseFs(fs fs.FS, patterns ...string) (*template.Template, error)
 		"csrfField": func() (template.HTML, error) {
 			return `<-- todo csrf field -->`, errors.New("csrfField not implemented yet")
 		},
-		"isLogin": func() bool {
-			return false
+		"currentUser": func() (*models.UserSession, error) {
+			return nil, errors.New("currentUser not implemented yet")
 		},
 	})
 	tpl, err := tpl.ParseFS(fs, patterns...)
