@@ -171,8 +171,27 @@ func (u *Users) ForgotPassword(r *http.Request) ([]http.Cookie, interface{}) {
 			Errors: []string{"Email is required"},
 		}
 	}
+	userModel := models.User{
+		Email: r.FormValue("email"),
+	}
+	user, err := userModel.GetUserByEmail()
+	if err != nil {
+		return nil, PasswordResetResponse{
+			Errors: []string{"Email not found"},
+		}
+	}
+	// create a password reset token
+	passwordResetModel := models.PasswordReset{
+		UserId: user.Id,
+	}
+	err = passwordResetModel.Create()
+	if err != nil {
+		return nil, PasswordResetResponse{
+			Errors: []string{"Something went wrong"},
+		}
+	}
 	go func() {
-		resetURL := "https:/tip.localhost/reset-password?token=123"
+		resetURL := "https:/tip.localhost/reset-password?token=" + passwordResetModel.TokenHash
 		email := emailService.Email{
 			Subject:   "Reset your password",
 			To:        email,

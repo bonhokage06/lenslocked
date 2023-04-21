@@ -25,6 +25,7 @@ func (router *Router) New() http.Handler {
 	Users := controllers.Users{}
 	Auth := controllers.Auth{}
 	Message := controllers.Message{}
+	Passwordreset := controllers.PasswordReset{}
 	r.Get("/", HtmlHandler(controllers.Html(nil, "home.gohtml", "partials/layout-parts.gohtml")))
 	r.Get("/contact", HtmlHandler(controllers.Html(nil, "contact.gohtml", "partials/layout-parts.gohtml")))
 	r.Get("/contact/{id}", HtmlHandler(controllers.Html(Contact.Create, "contact.gohtml", "partials/layout-parts.gohtml")))
@@ -32,6 +33,7 @@ func (router *Router) New() http.Handler {
 	r.Get("/signup", HtmlHandler(controllers.Html(Users.Index, "users/new.gohtml", "partials/*")))
 	r.Get("/signin", HtmlHandler(controllers.Html(Users.Index, "users/signin.gohtml", "partials/*")))
 	r.Get("/reset-password", HtmlHandler(controllers.Html(Users.Index, "users/forgot.gohtml", "partials/*")))
+	r.Get("/reset-password/{token}", HtmlHandler(controllers.Html(Passwordreset.Index, "users/reset.gohtml", "partials/*")))
 	r.Post("/signin", HtmlHandler((controllers.Html(Users.SignIn, "users/signin.gohtml", "partials/*"))))
 	r.Post("/auth/signout", HtmlHandler(controllers.Html(Users.SignOut, "home.gohtml", "partials/*")))
 	r.Post("/users/create", HtmlHandler((controllers.Html(Users.Create, "users/new.gohtml", "partials/*"))))

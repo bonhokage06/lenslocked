@@ -2,8 +2,10 @@ package constants
 
 const TextHtml = "text/html; charset=utf-8"
 
-const SessionTokenBytes = 32
-
+const (
+	SessionTokenBytes  = 32
+	PasswordTokenBytes = 32
+)
 const (
 	Host     = "sandbox.smtp.mailtrap.io"
 	Port     = 2525

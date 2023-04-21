@@ -51,3 +51,11 @@ type Auth struct {
 type AuthResponse struct {
 	Errors []string `json:"errors"`
 }
+
+type PasswordReset struct {
+}
+
+type PasswordResetResponse struct {
+	Email  string
+	Errors []string `json:"errors"`
+}

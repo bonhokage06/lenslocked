@@ -20,6 +20,14 @@ func (u User) Get() ([]User, error) {
 	}
 	return users, nil
 }
+func (u User) GetUserByEmail() (User, error) {
+	var user User
+	err := database.Db.Select("*").From("users").Where(dbx.HashExp{"email": u.Email}).One(&user)
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
+}
 
 // write a function that create a user
 func (u User) Create() error {

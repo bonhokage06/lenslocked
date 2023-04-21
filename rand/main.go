@@ -32,3 +32,7 @@ func String(n int) (string, error) {
 func SessionToken() (string, error) {
 	return String(constants.SessionTokenBytes)
 }
+
+func PassworToken() (string, error) {
+	return String(constants.PasswordTokenBytes)
+}
