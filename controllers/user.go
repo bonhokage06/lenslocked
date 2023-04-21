@@ -171,14 +171,21 @@ func (u *Users) ForgotPassword(r *http.Request) ([]http.Cookie, interface{}) {
 			Errors: []string{"Email is required"},
 		}
 	}
+	cookies := []http.Cookie{
+		{
+			Name:     "Path",
+			Value:    fmt.Sprintf("/message?status=%s&message=%s", "Success", "Email sent successfully."),
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
+		},
+	}
 	userModel := models.User{
 		Email: r.FormValue("email"),
 	}
 	user, err := userModel.GetUserByEmail()
 	if err != nil {
-		return nil, PasswordResetResponse{
-			Errors: []string{"Email not found"},
-		}
+		return cookies, nil
 	}
 	// create a password reset token
 	passwordResetModel := models.PasswordReset{
@@ -200,14 +207,5 @@ func (u *Users) ForgotPassword(r *http.Request) ([]http.Cookie, interface{}) {
 		}
 		emailService.Send(email)
 	}()
-	cookies := []http.Cookie{
-		{
-			Name:     "Path",
-			Value:    fmt.Sprintf("/message?status=%s&message=%s", "Success", "Email sent successfully."),
-			HttpOnly: true,
-			Secure:   true,
-			SameSite: http.SameSiteLaxMode,
-		},
-	}
-	return cookies, UsersResponse{}
+	return cookies, nil
 }
