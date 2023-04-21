@@ -172,6 +172,13 @@ func (u *Users) ForgotPassword(r *http.Request) ([]http.Cookie, interface{}) {
 		}
 	}
 	go func() {
+		resetURL := "https:/tip.localhost/reset-password?token=123"
+		email := emailService.Email{
+			Subject:   "Reset your password",
+			To:        email,
+			Plaintext: "To reset your password, please visit the following link: " + resetURL,
+			Html:      `<p>To reset your password, please visit the following link: <a href="` + resetURL + `">` + resetURL + `</a></p>`,
+		}
 		emailService.Send(email)
 	}()
 	cookies := []http.Cookie{

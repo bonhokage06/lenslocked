@@ -7,14 +7,21 @@ import (
 	"github.com/go-mail/mail/v2"
 )
 
-func Send(to string) {
+type Email struct {
+	To        string
+	Subject   string
+	Plaintext string
+	Html      string
+}
+
+func Send(email Email) {
 	from := "test@lenslocked.com"
-	subject := "This is a test email"
-	plaintext := "This is the body of the email"
-	html := `<h1>Hello there buddy!</h1><p>This is the email</p><p>Hope you enjoy it</p>`
+	subject := email.Subject
+	plaintext := email.Plaintext
+	html := email.Html
 
 	msg := mail.NewMessage()
-	msg.SetHeader("To", to)
+	msg.SetHeader("To", email.To)
 	msg.SetHeader("From", from)
 	msg.SetHeader("Subject", subject)
 	msg.SetBody("text/plain", plaintext)
