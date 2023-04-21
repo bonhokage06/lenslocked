@@ -3,7 +3,7 @@
     <div class="px-8 py-6 w-1/3 bg-white rounded shadow">
         {{template "errors" .}}    
         <h1 class="py-2 text-4xl font-bold text-center">Reset Password</h1>    
-        <form method="POST" action="/users/forgot">
+        <form method="POST" action="/users/reset">
             <div class="hidden">
                 {{csrfField}}
             </div>        
@@ -13,7 +13,7 @@
             <div class="py-2">
                 <label class="text-sm font-semibold text-gray-800" for="password">New Password</label>
                 <input class="w-full px-3 py-2 border border-gray-200 placeholder-gray-500 text-gray-800 rounded" 
-                    type="email" id="password" name="password" placeHolder="Password" autocomplete="password" 
+                    type="password" id="password" name="password" placeHolder="Password" autocomplete="password" 
                     value="" required {{if not .Email}} autofocus {{end}}/>
             </div>            
             <div class="py-4">

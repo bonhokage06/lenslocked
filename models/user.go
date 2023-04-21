@@ -35,7 +35,6 @@ func (u User) Create() error {
 	if err != nil {
 		return err
 	}
-
 	_, err = database.Db.Insert("users", dbx.Params{
 		"email":         u.Email,
 		"password_hash": hash,
@@ -55,4 +54,19 @@ func (u User) Authenticate() (bool, User) {
 	}
 	isValid := helpers.ComparePasswords(user.Hash, u.Hash)
 	return isValid, user
+}
+
+// write a function that chance password
+func (u User) ChangePassword() error {
+	hash, err := helpers.HashAndSalt(u.Hash)
+	if err != nil {
+		return err
+	}
+	_, err = database.Db.Update("users", dbx.Params{
+		"password_hash": hash,
+	}, dbx.HashExp{"email": u.Email}).Execute()
+	if err != nil {
+		return err
+	}
+	return nil
 }
