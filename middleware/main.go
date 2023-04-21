@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -31,7 +30,6 @@ func IsAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := context.User(r.Context())
 		path := r.URL.Path
-		fmt.Println("path", path)
 		if user != nil {
 			isLoggin := user.Email != ""
 			if isLoggin && !strings.Contains(path, "auth") {
