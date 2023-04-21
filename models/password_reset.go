@@ -34,11 +34,13 @@ func (pr *PasswordReset) Create() error {
 	//set the expiration time
 	pr.ExpiresAt = time.Now().Add(time.Minute * 30)
 	//save the token to the database
-	_, err = database.Db.Insert("password_resets", dbx.Params{
+	query := database.Db.NewQuery("INSERT INTO password_resets (user_id,token_hash,expires_at) VALUES ({:user_id},{:token_hash},{:expires_at}) ON CONFLICT (user_id) DO UPDATE SET token_hash={:token_hash},expires_at={:expires_at}")
+	query.Bind(dbx.Params{
 		"user_id":    pr.UserId,
-		"token_hash": helpers.Encode(token),
+		"token_hash": helpers.Encode(pr.TokenHash),
 		"expires_at": pr.ExpiresAt,
-	}).Execute()
+	})
+	_, err = query.Execute()
 	if err != nil {
 		return err
 	}
